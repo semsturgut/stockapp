@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "243575676194",
+    "firebase_url": "https://gumush-db.firebaseio.com",
+    "project_id": "gumush-db",
+    "storage_bucket": "gumush-db.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:243575676194:android:c19970fbef4d3b91",
+        "android_client_info": {
+          "package_name": "com.gumush.stockapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "243575676194-lpt320u3qnjhsq1tjn2im3cfccmq0kim.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gumush.stockapp",
+            "certificate_hash": "9c14d3313c2920d7e1de93c89fd4090429cbb168"
+          }
+        },
+        {
+          "client_id": "243575676194-0645s5h18p9ntpg4h4kb1vlqlm6eppqq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5mNTRpzMy7NAbFLo7InD58o-gAaH5iVY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "243575676194-0645s5h18p9ntpg4h4kb1vlqlm6eppqq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "243575676194-6aetjgg9erg5s606rr4h4kkmfp1gq665.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.gumush.stockapp"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
