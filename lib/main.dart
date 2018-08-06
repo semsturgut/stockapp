@@ -9,7 +9,6 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 //TODO: Add Search with Serial Number.
 
 void main() => runApp(MyApp());
-var counter = 0; // Temporary
 
 class MyApp extends StatelessWidget {
   const MyApp();
@@ -60,7 +59,7 @@ class ListItems extends StatelessWidget {
               Icons.favorite,
               color: Colors.redAccent,
             ),
-            title: new Text(document['name_key']),
+            title: new Text(document['serial_number_key']),
             subtitle: new Text(
               document['piece_key'].toString(),
             ),
@@ -191,10 +190,11 @@ class AddItemsState extends State<AddItems> {
             .collection('serial_number')
             .document(itemSerialNumber.text)
             .setData({
+          'serial_number_key': itemSerialNumber.text,
           'name_key': itemName.text,
           'piece_key': int.parse(itemPiece.text),
           'type_key': itemType.text,
-          'extras_key': itemExtras.text
+          'extras_key': itemExtras.text,
         });
         _showSnackBar();
         dispose();
