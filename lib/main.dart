@@ -5,20 +5,21 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
-//TODO: Re-design ListView Cards to show Serial Number, Name, Piece, Type, Extras.
-//TODO: Add Search with Serial Number.
+void main() => runApp(StockApp());
 
-void main() => runApp(MyApp());
+final primaryColor = Colors.blueGrey;
+final accentColor = Colors.blue;
+const alertColor = Color(0xFFFF5E00);
+const nameColor = Color(0xFF605A76);
 
-class MyApp extends StatelessWidget {
-  const MyApp();
+class StockApp extends StatelessWidget {
+  const StockApp();
 
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
       title: 'Gumush Stock App',
-      theme: ThemeData(
-          primaryColor: Colors.blueGrey, accentColor: Colors.blueAccent),
+      theme: ThemeData(primaryColor: primaryColor, accentColor: accentColor),
       home: const ListItems(title: 'List of Items'),
     );
   }
@@ -28,42 +29,123 @@ class ListItems extends StatelessWidget {
   const ListItems({Key key, this.title}) : super(key: key);
   final String title;
 
-//  TODO: Check new added documentID for collapsing new data.
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
     return new Container(
-      child: new Card(
-        child: Dismissible(
-          direction: DismissDirection.endToStart,
-          key: new ValueKey(document.documentID),
-          onDismissed: (direction) {
-            Firestore.instance.runTransaction((transaction) async {
-              DocumentSnapshot freshSnap =
-                  await transaction.get(document.reference);
-              await transaction.delete(freshSnap.reference);
-            });
-          },
-          background: Card(
-            color: Colors.redAccent,
-            child: Center(
-              child: ListTile(
-                trailing: Icon(
-                  MdiIcons.delete,
-                  color: Colors.white,
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => AddItems(document: document)),
+          );
+        },
+        child: new Card(
+          child: Dismissible(
+            direction: DismissDirection.endToStart,
+            key: new ValueKey(document.documentID),
+            onDismissed: (direction) {
+              Firestore.instance.runTransaction((transaction) async {
+                DocumentSnapshot freshSnap =
+                await transaction.get(document.reference);
+                await transaction.delete(freshSnap.reference);
+              });
+            },
+            background: Card(
+              margin: const EdgeInsets.all(0.0),
+              color: Colors.redAccent,
+              child: Center(
+                child: ListTile(
+                  trailing: Icon(
+                    MdiIcons.delete,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
-          ),
-          child: new ListTile(
-            key: new ValueKey(document.documentID),
-            leading: Icon(
-              Icons.favorite,
-              color: Colors.redAccent,
+            child: new ListTile(
+              key: new ValueKey(document.documentID),
+              leading: (document['piece_key'] < 5
+                  ? Icon(
+                MdiIcons.alertCircleOutline,
+                color: alertColor,
+              )
+                  : Icon(
+                MdiIcons.checkCircleOutline,
+                color: Colors.greenAccent,
+              )),
+//              TODO: Smaller devices (iPhone 5s) had wrap text issue on serial number.
+              title: new Text(
+                document['serial_number_key'],
+                style:
+                TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
+              ),
+              trailing: FlatButton(
+                  padding: EdgeInsets.only(
+                      left: 40.0, right: 0.0, bottom: 0.0, top: 0.0),
+                  onPressed: null,
+                  child: new Text(
+                    document['piece_key'].toString(),
+                    style: TextStyle(
+                        color: alertColor,
+                        fontWeight: FontWeight.w100,
+                        fontSize: 32.0),
+                  )),
+              subtitle: new Container(
+                alignment: Alignment.centerLeft,
+                child: new Row(
+                  children: <Widget>[
+                    new Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        new Text(
+                          'Name:',
+                          style: TextStyle(
+                            color: nameColor,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4.0),
+                          child: new Text(
+                            'Type:',
+                            style: TextStyle(
+                              color: nameColor,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: new Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          new Text(
+                            document['name_key'],
+                            style: TextStyle(fontWeight: FontWeight.w300),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4.0),
+                            child: new Text(
+                              document['type_key'] == ''
+                                  ? '-'
+                                  : document['type_key'],
+                              style: TextStyle(
+                                fontWeight: FontWeight.w300,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              isThreeLine: true,
             ),
-            title: new Text(document['serial_number_key']),
-            subtitle: new Text(
-              document['piece_key'].toString(),
-            ),
-            isThreeLine: true,
           ),
         ),
       ),
@@ -96,7 +178,13 @@ class ListItems extends StatelessWidget {
               .orderBy('piece_key', descending: false)
               .snapshots(),
           builder: (context, snapshot) {
-            if (!snapshot.hasData) return const Text('Loading...');
+            if (!snapshot.hasData)
+              return Center(
+                  child: new Icon(
+                    Icons.cloud_download,
+                    color: primaryColor,
+                    size: 64.0,
+                  ));
             return new ListView.builder(
                 itemCount: snapshot.data.documents.length,
                 itemBuilder: (context, index) {
@@ -109,14 +197,19 @@ class ListItems extends StatelessWidget {
 }
 
 class AddItems extends StatefulWidget {
+  final DocumentSnapshot document;
+
+  const AddItems({Key key, this.document}) : super(key: key);
+
   @override
   AddItemsState createState() {
-    return new AddItemsState();
+    return new AddItemsState(document);
   }
 }
 
 class AddItemsState extends State<AddItems> {
   String serialNumberBarcode = "";
+
   final GlobalKey<ScaffoldState> _scaffoldAddItemsKey =
       new GlobalKey<ScaffoldState>();
 
@@ -125,6 +218,10 @@ class AddItemsState extends State<AddItems> {
   final TextEditingController itemPiece = new TextEditingController();
   final TextEditingController itemType = new TextEditingController();
   final TextEditingController itemExtras = new TextEditingController();
+
+  final DocumentSnapshot document;
+
+  AddItemsState(this.document);
 
   @override
   void dispose() {
@@ -143,6 +240,15 @@ class AddItemsState extends State<AddItems> {
 
   @override
   initState() {
+    try {
+      itemSerialNumber.text = document['serial_number_key'];
+      itemName.text = document['name_key'];
+      itemPiece.text = document['piece_key'].toString();
+      itemType.text = document['type_key'];
+      itemExtras.text = document['extras_key'];
+    } on NoSuchMethodError {} catch (e) {
+      setState(() => this.serialNumberBarcode = 'Unknown error: $e');
+    }
     super.initState();
   }
 
@@ -178,6 +284,26 @@ class AddItemsState extends State<AddItems> {
     return null;
   }
 
+  Future<FutureBuilder> checkSerialNumber(String serialNumber) async {
+    try {
+      DocumentSnapshot result = await Firestore.instance
+          .collection('serial_number')
+          .document(serialNumber)
+          .get();
+
+      itemSerialNumber.text = result['serial_number_key'];
+      itemName.text = result['name_key'];
+      itemPiece.text = result['piece_key'].toString();
+      itemType.text = result['type_key'];
+      itemExtras.text = result['extras_key'];
+    } on NoSuchMethodError {
+      itemSerialNumber.text = serialNumber;
+    } catch (e) {
+      setState(() => this.serialNumberBarcode = 'Unknown error: $e');
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     var _onPressed;
@@ -185,7 +311,7 @@ class AddItemsState extends State<AddItems> {
         itemName.text != '' &&
         itemPiece.text != '') {
       _onPressed = () {
-        // TODO: Add sound for correction.
+        // TODO: Add sound feedback for add/update or edited document.
         Firestore.instance
             .collection('serial_number')
             .document(itemSerialNumber.text)
@@ -235,7 +361,7 @@ class AddItemsState extends State<AddItems> {
                         suffixIcon: new GestureDetector(
                           onTap: () {
                             scanBarcode().whenComplete(() {
-                              itemSerialNumber.text = serialNumberBarcode;
+                              checkSerialNumber(serialNumberBarcode);
                             });
                           },
                           child: new Icon(
