@@ -46,7 +46,7 @@ class ListItems extends StatelessWidget {
             onDismissed: (direction) {
               Firestore.instance.runTransaction((transaction) async {
                 DocumentSnapshot freshSnap =
-                await transaction.get(document.reference);
+                    await transaction.get(document.reference);
                 await transaction.delete(freshSnap.reference);
               });
             },
@@ -62,34 +62,41 @@ class ListItems extends StatelessWidget {
                 ),
               ),
             ),
+            // TODO: Re-design the entire ListTile, because trailing part is unstable for smaller screens.
             child: new ListTile(
               key: new ValueKey(document.documentID),
               leading: (document['piece_key'] < 5
-                  ? Icon(
-                MdiIcons.alertCircleOutline,
-                color: alertColor,
-              )
-                  : Icon(
-                MdiIcons.checkCircleOutline,
-                color: Colors.greenAccent,
-              )),
-//              TODO: Smaller devices (iPhone 5s) had wrap text issue on serial number.
+                  ? new Icon(
+                      MdiIcons.alertCircleOutline,
+                      color: alertColor,
+                    )
+                  : new Icon(
+                      MdiIcons.checkCircleOutline,
+                      color: Colors.greenAccent,
+                    )),
               title: new Text(
                 document['serial_number_key'],
                 style:
-                TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
+                    TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
               ),
               trailing: FlatButton(
-                  padding: EdgeInsets.only(
-                      left: 40.0, right: 0.0, bottom: 0.0, top: 0.0),
-                  onPressed: null,
-                  child: new Text(
-                    document['piece_key'].toString(),
-                    style: TextStyle(
-                        color: alertColor,
-                        fontWeight: FontWeight.w100,
-                        fontSize: 32.0),
-                  )),
+                padding: EdgeInsets.only(
+                    left: 40.0, right: 0.0, bottom: 0.0, top: 0.0),
+                child: (document['piece_key'] < 5
+                    ? new Text(
+                        document['piece_key'].toString(),
+                        style: TextStyle(
+                            color: alertColor,
+                            fontWeight: FontWeight.w100,
+                            fontSize: 32.0),
+                      )
+                    : new Text(
+                        document['piece_key'].toString(),
+                        style: TextStyle(
+                            fontWeight: FontWeight.w100, fontSize: 32.0),
+                      )),
+                onPressed: null,
+              ),
               subtitle: new Container(
                 alignment: Alignment.centerLeft,
                 child: new Row(
@@ -181,10 +188,10 @@ class ListItems extends StatelessWidget {
             if (!snapshot.hasData)
               return Center(
                   child: new Icon(
-                    Icons.cloud_download,
-                    color: primaryColor,
-                    size: 64.0,
-                  ));
+                Icons.cloud_download,
+                color: primaryColor,
+                size: 64.0,
+              ));
             return new ListView.builder(
                 itemCount: snapshot.data.documents.length,
                 itemBuilder: (context, index) {
