@@ -10,39 +10,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ea0b0f3d-6967-4635-afc8-4b894ad711e5" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/icon/icon.png" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/lib/addItems.dart" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/lib/gridCategory.dart" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/lib/listItems.dart" />
       <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" />
       <change beforePath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/AndroidManifest.xml" afterPath="$PROJECT_DIR$/android/app/src/main/AndroidManifest.xml" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/mipmap-hdpi/ic_launcher.png" afterPath="$PROJECT_DIR$/android/app/src/main/res/mipmap-hdpi/ic_launcher.png" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/mipmap-mdpi/ic_launcher.png" afterPath="$PROJECT_DIR$/android/app/src/main/res/mipmap-mdpi/ic_launcher.png" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png" afterPath="$PROJECT_DIR$/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png" afterPath="$PROJECT_DIR$/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" afterPath="$PROJECT_DIR$/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" />
-      <change beforePath="$PROJECT_DIR$/ios/Podfile.lock" afterPath="$PROJECT_DIR$/ios/Podfile.lock" />
-      <change beforePath="$PROJECT_DIR$/ios/Runner.xcodeproj/project.pbxproj" afterPath="$PROJECT_DIR$/ios/Runner.xcodeproj/project.pbxproj" />
-      <change beforePath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png" afterPath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png" />
-      <change beforePath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@1x.png" afterPath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@1x.png" />
-      <change beforePath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@2x.png" afterPath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@2x.png" />
-      <change beforePath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@3x.png" afterPath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@3x.png" />
-      <change beforePath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@1x.png" afterPath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@1x.png" />
-      <change beforePath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@2x.png" afterPath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@2x.png" />
-      <change beforePath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@3x.png" afterPath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@3x.png" />
-      <change beforePath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@1x.png" afterPath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@1x.png" />
-      <change beforePath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@2x.png" afterPath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@2x.png" />
-      <change beforePath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@3x.png" afterPath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@3x.png" />
-      <change beforePath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@2x.png" afterPath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@2x.png" />
-      <change beforePath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@3x.png" afterPath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@3x.png" />
-      <change beforePath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@1x.png" afterPath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@1x.png" />
-      <change beforePath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@2x.png" afterPath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@2x.png" />
-      <change beforePath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-83.5x83.5@2x.png" afterPath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-83.5x83.5@2x.png" />
-      <change beforePath="$PROJECT_DIR$/lib/main.dart" afterPath="$PROJECT_DIR$/lib/main.dart" />
-      <change beforePath="$PROJECT_DIR$/pubspec.lock" afterPath="$PROJECT_DIR$/pubspec.lock" />
-      <change beforePath="$PROJECT_DIR$/pubspec.yaml" afterPath="$PROJECT_DIR$/pubspec.yaml" />
     </list>
     <ignored path="$PROJECT_DIR$/.dart_tool/" />
     <ignored path="$PROJECT_DIR$/.idea/" />
@@ -91,8 +61,7 @@
                   <folding>
                     <element signature="e#0#19#0" expanded="true" />
                     <element signature="e#497#5442#0" expanded="false" />
-                    <element signature="e#5544#5956#0" expanded="false" />
-                    <element signature="e#5629#5937#0" expanded="false" />
+                    <marker date="1535544123712" expanded="true" signature="6395:6410" ph="(...)" />
                   </folding>
                 </state>
               </provider>
@@ -131,8 +100,7 @@
                   <caret line="19" column="20" lean-forward="false" selection-start-line="19" selection-start-column="20" selection-end-line="19" selection-end-column="20" />
                   <folding>
                     <element signature="e#0#19#0" expanded="true" />
-                    <element signature="e#5544#5956#0" expanded="false" />
-                    <element signature="e#5629#5937#0" expanded="false" />
+                    <marker date="1535544123712" expanded="true" signature="6395:6410" ph="(...)" />
                   </folding>
                 </state>
               </provider>
@@ -208,8 +176,8 @@
         <option value="$PROJECT_DIR$/lib/addItems.dart" />
         <option value="$PROJECT_DIR$/lib/gridCollections.dart" />
         <option value="$PROJECT_DIR$/lib/main.dart" />
-        <option value="$PROJECT_DIR$/lib/listItems.dart" />
         <option value="$PROJECT_DIR$/lib/gridCategory.dart" />
+        <option value="$PROJECT_DIR$/lib/listItems.dart" />
       </list>
     </option>
   </component>
@@ -380,7 +348,14 @@
       <option name="project" value="LOCAL" />
       <updated>1533689578773</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="DONE:&#10;- Kodlar&#10;TODO:&#10;-Smaller devices (iPhone 5s) had wrap text issue on serial number.&#10;-Add sound feedback for add/update or edited document.">
+      <created>1535719017977</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1535719017977</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TodoView">
@@ -435,7 +410,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Everything was coded is working on Android and IOS side, for now of course.&#10;- Added barcode scanning.&#10;- Added listing all data, ordering by pieces.&#10;- Added manually add serial number.&#10;TODOS:&#10;//TODO: Re-design ListView Cards to show Serial Number, Name, Piece, Type, Extras.&#10;//TODO: Add Search with Serial Number." />
     <MESSAGE value="DONE:&#10;- Added editing from selected list or searched from barcode.&#10;TODO:&#10;-Smaller devices (iPhone 5s) had wrap text issue on serial number.&#10;-Add sound feedback for add/update or edited document." />
-    <option name="LAST_COMMIT_MESSAGE" value="DONE:&#10;- Added editing from selected list or searched from barcode.&#10;TODO:&#10;-Smaller devices (iPhone 5s) had wrap text issue on serial number.&#10;-Add sound feedback for add/update or edited document." />
+    <MESSAGE value="DONE:&#10;- Kodlar&#10;TODO:&#10;-Smaller devices (iPhone 5s) had wrap text issue on serial number.&#10;-Add sound feedback for add/update or edited document." />
+    <option name="LAST_COMMIT_MESSAGE" value="DONE:&#10;- Kodlar&#10;TODO:&#10;-Smaller devices (iPhone 5s) had wrap text issue on serial number.&#10;-Add sound feedback for add/update or edited document." />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
@@ -831,8 +807,7 @@
           <caret line="19" column="20" lean-forward="false" selection-start-line="19" selection-start-column="20" selection-end-line="19" selection-end-column="20" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
-            <element signature="e#5544#5956#0" expanded="false" />
-            <element signature="e#5629#5937#0" expanded="false" />
+            <marker date="1535544123712" expanded="true" signature="6395:6410" ph="(...)" />
           </folding>
         </state>
       </provider>
