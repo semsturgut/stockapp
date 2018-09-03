@@ -123,6 +123,8 @@ class AddItemsState extends State<AddItems> {
         // TODO: Add sound feedback for add/update or edited document.
         Firestore.instance
             .collection('serial_number')
+            .document('something')
+            .collection('something2')
             .document(itemSerialNumber.text)
             .setData({
           'serial_number_key': itemSerialNumber.text,
