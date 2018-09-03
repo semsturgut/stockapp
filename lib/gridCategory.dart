@@ -7,16 +7,13 @@ class GridCategory extends StatelessWidget {
   final String title;
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
-    return new Container
-    (
+    return new Container(
         child: new Card(
-    child: GridTile(
-    key: new ValueKey(document.documentID),child
-    :
-    ,
-    )
-    ,
-    );
+          child: GridTile(
+            key: new ValueKey(document.documentID),
+            child: Text(document['type_key']),
+          ),
+        ));
   }
 
   @override
@@ -26,10 +23,7 @@ class GridCategory extends StatelessWidget {
         title: Text(title),
       ),
       body: new StreamBuilder(
-          stream: Firestore.instance
-              .collection('serial_number')
-              .orderBy('piece_key', descending: false)
-              .snapshots(),
+          stream: Firestore.instance.collection('serial_number').snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData)
               return Center(
@@ -38,6 +32,7 @@ class GridCategory extends StatelessWidget {
                     color: primaryColor,
                     size: 64.0,
                   ));
+
             return new GridView.builder(
               gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2),
