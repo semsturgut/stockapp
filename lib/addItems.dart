@@ -7,12 +7,13 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 
 class AddItems extends StatefulWidget {
   final DocumentSnapshot document;
+  final String documentID;
 
-  const AddItems({Key key, this.document}) : super(key: key);
+  const AddItems({Key key, this.document, this.documentID}) : super(key: key);
 
   @override
   AddItemsState createState() {
-    return new AddItemsState(document);
+    return new AddItemsState(document, documentID);
   }
 }
 
@@ -25,12 +26,14 @@ class AddItemsState extends State<AddItems> {
   final TextEditingController itemSerialNumber = new TextEditingController();
   final TextEditingController itemName = new TextEditingController();
   final TextEditingController itemPiece = new TextEditingController();
-  final TextEditingController itemType = new TextEditingController();
+
+//  final TextEditingController itemType = new TextEditingController();
   final TextEditingController itemExtras = new TextEditingController();
 
   final DocumentSnapshot document;
+  final String documentID;
 
-  AddItemsState(this.document);
+  AddItemsState(this.document, this.documentID);
 
   @override
   void dispose() {
@@ -40,8 +43,8 @@ class AddItemsState extends State<AddItems> {
     itemName.clear();
     itemPiece.clearComposing();
     itemPiece.clear();
-    itemType.clearComposing();
-    itemType.clear();
+//    itemType.clearComposing();
+//    itemType.clear();
     itemExtras.clearComposing();
     itemExtras.clear();
     super.dispose();
@@ -53,7 +56,7 @@ class AddItemsState extends State<AddItems> {
       itemSerialNumber.text = document['serial_number_key'];
       itemName.text = document['name_key'];
       itemPiece.text = document['piece_key'].toString();
-      itemType.text = document['type_key'];
+//      itemType.text = document['type_key'];
       itemExtras.text = document['extras_key'];
     } on NoSuchMethodError {} catch (e) {
       setState(() => this.serialNumberBarcode = 'Unknown error: $e');
@@ -69,6 +72,24 @@ class AddItemsState extends State<AddItems> {
       ),
     );
     _scaffoldAddItemsKey.currentState.showSnackBar(snackBar);
+  }
+
+  _addToFireStore() {
+    final String serialConverted = itemSerialNumber.text;
+    Firestore.instance
+        .collection('serial_number')
+        .document(documentID)
+        .updateData({
+      '$serialConverted': {
+        'serial_number_key': itemSerialNumber.text,
+        'name_key': itemName.text,
+        'piece_key': int.parse(itemPiece.text),
+//        'type_key': itemType.text,
+        'extras_key': itemExtras.text,
+      }
+    });
+    _showSnackBar();
+    dispose();
   }
 
   Future<FutureBuilder> scanBarcode() async {
@@ -103,7 +124,7 @@ class AddItemsState extends State<AddItems> {
       itemSerialNumber.text = result['serial_number_key'];
       itemName.text = result['name_key'];
       itemPiece.text = result['piece_key'].toString();
-      itemType.text = result['type_key'];
+//      itemType.text = result['type_key'];
       itemExtras.text = result['extras_key'];
     } on NoSuchMethodError {
       itemSerialNumber.text = serialNumber;
@@ -120,19 +141,7 @@ class AddItemsState extends State<AddItems> {
         itemName.text != '' &&
         itemPiece.text != '') {
       _onPressed = () {
-        // TODO: Add sound feedback for add/update or edited document.
-        Firestore.instance
-            .collection('serial_number')
-            .document(itemSerialNumber.text)
-            .setData({
-          'serial_number_key': itemSerialNumber.text,
-          'name_key': itemName.text,
-          'piece_key': int.parse(itemPiece.text),
-          'type_key': itemType.text,
-          'extras_key': itemExtras.text,
-        });
-        _showSnackBar();
-        dispose();
+        _addToFireStore();
       };
     }
 
@@ -165,7 +174,7 @@ class AddItemsState extends State<AddItems> {
                       enabled: true,
                       decoration: InputDecoration(
                         labelText: 'Serial Number',
-                        border: OutlineInputBorder(),
+                        border: UnderlineInputBorder(),
                         helperText: 'Required',
                         suffixIcon: new GestureDetector(
                           onTap: () {
@@ -192,7 +201,7 @@ class AddItemsState extends State<AddItems> {
                 enabled: true,
                 decoration: InputDecoration(
                   labelText: 'Name',
-                  border: OutlineInputBorder(),
+                  border: UnderlineInputBorder(),
                   helperText: 'Required',
                 ),
               ),
@@ -205,22 +214,22 @@ class AddItemsState extends State<AddItems> {
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   labelText: 'Piece',
-                  border: OutlineInputBorder(),
+                  border: UnderlineInputBorder(),
                   helperText: 'Required',
                 ),
               ),
             ),
-            new Padding(
-              padding: const EdgeInsets.only(bottom: 10.0),
-              child: new TextField(
-                controller: itemType,
-                enabled: true,
-                decoration: InputDecoration(
-                    labelText: 'Category',
-                    border: OutlineInputBorder(),
-                    helperText: 'Optional'),
-              ),
-            ),
+//            new Padding(
+//              padding: const EdgeInsets.only(bottom: 10.0),
+//              child: new TextField(
+//                controller: itemType,
+//                enabled: true,
+//                decoration: InputDecoration(
+//                    labelText: 'Category',
+//                    border: UnderlineInputBorder(),
+//                    helperText: 'Optional'),
+//              ),
+//            ),
             new Padding(
               padding: const EdgeInsets.only(bottom: 10.0),
               child: new TextField(
@@ -228,7 +237,7 @@ class AddItemsState extends State<AddItems> {
                 enabled: true,
                 decoration: InputDecoration(
                     labelText: 'Extras',
-                    border: OutlineInputBorder(),
+                    border: UnderlineInputBorder(),
                     helperText: 'Optional'),
               ),
             ),

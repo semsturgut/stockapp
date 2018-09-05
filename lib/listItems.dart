@@ -11,6 +11,13 @@ class ListItems extends StatelessWidget {
   const ListItems({Key key, this.title}) : super(key: key);
   final String title;
 
+  _deleteItem(DocumentSnapshot document) {
+    Firestore.instance.runTransaction((transaction) async {
+      DocumentSnapshot freshSnap = await transaction.get(document.reference);
+      await transaction.delete(freshSnap.reference);
+    });
+  }
+
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
     return new Container(
       child: GestureDetector(
@@ -18,7 +25,11 @@ class ListItems extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => AddItems(document: document)),
+                builder: (context) =>
+                    AddItems(
+                      document: document,
+                      documentID: title,
+                    )),
           );
         },
         child: new Card(
@@ -26,11 +37,7 @@ class ListItems extends StatelessWidget {
             direction: DismissDirection.endToStart,
             key: new ValueKey(document.documentID),
             onDismissed: (direction) {
-              Firestore.instance.runTransaction((transaction) async {
-                DocumentSnapshot freshSnap =
-                    await transaction.get(document.reference);
-                await transaction.delete(freshSnap.reference);
-              });
+              _deleteItem(document);
             },
             background: Card(
               margin: const EdgeInsets.all(0.0),
@@ -155,7 +162,8 @@ class ListItems extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => AddItems()),
+                MaterialPageRoute(
+                    builder: (context) => AddItems(documentID: title)),
               );
             },
           )
@@ -164,7 +172,7 @@ class ListItems extends StatelessWidget {
       body: new StreamBuilder(
           stream: Firestore.instance
               .collection('serial_number')
-              .orderBy('piece_key', descending: false)
+              .document(title)
               .snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData)
@@ -175,10 +183,10 @@ class ListItems extends StatelessWidget {
                 size: 64.0,
               ));
             return new ListView.builder(
-                itemCount: snapshot.data.documents.length,
+                itemCount: snapshot.data.fields.length,
                 itemBuilder: (context, index) {
                   return _buildListItem(
-                      context, snapshot.data.documents[index]);
+                      context, snapshot.data.fields[index]);
                 });
           }),
     );
