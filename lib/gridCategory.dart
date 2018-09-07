@@ -45,7 +45,7 @@ class GridCategory extends StatelessWidget {
                     title: new Text(
                         "Are you sure you want to delete '$currentDocumentID'?"),
                     content: new Text(
-                        "This item will be deleted immediately. You can't undo this action."),
+                        "This category will be deleted immediately. You can't undo this action."),
                     actions: <Widget>[
                       new FlatButton(
                         child: new Text("Yes"),
@@ -56,9 +56,7 @@ class GridCategory extends StatelessWidget {
                       ),
                       new FlatButton(
                         child: new Text("No"),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
+                        onPressed: () {},
                       )
                     ],
                   );

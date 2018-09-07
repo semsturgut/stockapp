@@ -18,7 +18,7 @@ class ListItems extends StatelessWidget {
     });
   }
 
-  Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
+  Widget _buildListItem(BuildContext context, MapEntry document) {
     return new Container(
       child: GestureDetector(
         onTap: () {
@@ -27,7 +27,7 @@ class ListItems extends StatelessWidget {
             MaterialPageRoute(
                 builder: (context) =>
                     AddItems(
-                      document: document,
+                      document: document.key, // Hata olabilir
                       documentID: title,
                     )),
           );
@@ -35,9 +35,10 @@ class ListItems extends StatelessWidget {
         child: new Card(
           child: Dismissible(
             direction: DismissDirection.endToStart,
-            key: new ValueKey(document.documentID),
+            key: new ValueKey(document.key),
+            // hata olabilir
             onDismissed: (direction) {
-              _deleteItem(document);
+              _deleteItem(document.key); // Hata olabilir
             },
             background: Card(
               margin: const EdgeInsets.all(0.0),
@@ -53,8 +54,9 @@ class ListItems extends StatelessWidget {
             ),
             // TODO: Re-design the entire ListTile, because trailing part is unstable for smaller screens.
             child: new ListTile(
-              key: new ValueKey(document.documentID),
-              leading: (document['piece_key'] < 5
+              key: new ValueKey(document.key),
+              // hata olabilir
+              leading: (document.value.key['piece_key'] < 5
                   ? new Icon(
                       MdiIcons.alertCircleOutline,
                       color: alertColor,
@@ -64,23 +66,23 @@ class ListItems extends StatelessWidget {
                       color: Colors.greenAccent,
                     )),
               title: new Text(
-                document['serial_number_key'],
+                document.value.key['serial_number_key'],
                 style:
                     TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
               ),
               trailing: FlatButton(
                 padding: EdgeInsets.only(
                     left: 40.0, right: 0.0, bottom: 0.0, top: 0.0),
-                child: (document['piece_key'] < 5
+                child: (document.value.key['piece_key'] < 5
                     ? new Text(
-                        document['piece_key'].toString(),
+                  document.value.key['piece_key'].toString(),
                         style: TextStyle(
                             color: alertColor,
                             fontWeight: FontWeight.w100,
                             fontSize: 32.0),
                       )
                     : new Text(
-                        document['piece_key'].toString(),
+                  document.value.key['piece_key'].toString(),
                         style: TextStyle(
                             fontWeight: FontWeight.w100, fontSize: 32.0),
                       )),
@@ -120,15 +122,15 @@ class ListItems extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           new Text(
-                            document['name_key'],
+                            document.value.key['name_key'],
                             style: TextStyle(fontWeight: FontWeight.w300),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 4.0),
                             child: new Text(
-                              document['type_key'] == ''
+                              document.value.key['type_key'] == ''
                                   ? '-'
-                                  : document['type_key'],
+                                  : document.value.key['type_key'],
                               style: TextStyle(
                                 fontWeight: FontWeight.w300,
                               ),
@@ -182,11 +184,11 @@ class ListItems extends StatelessWidget {
                 color: primaryColor,
                 size: 64.0,
               ));
+
             return new ListView.builder(
-                itemCount: snapshot.data.fields.length,
+                itemCount: snapshot.data.data.length,
                 itemBuilder: (context, index) {
-                  return _buildListItem(
-                      context, snapshot.data.fields[index]);
+                  return _buildListItem(context, snapshot.data.data[index]);
                 });
           }),
     );
