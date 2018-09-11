@@ -18,7 +18,34 @@ class ListItems extends StatelessWidget {
     });
   }
 
-  Widget _buildListItem(BuildContext context, MapEntry document) {
+  _updateItem(DocumentSnapshot document) {
+    int piece = document['piece_key'];
+    if (piece != 0) {
+      Firestore.instance
+          .collection('gumush_db')
+          .document(title)
+          .collection(title)
+          .document(document.documentID)
+          .setData({
+        'serial_number_key': document['serial_number_key'],
+        'name_key': document['name_key'],
+        'piece_key': piece - 1,
+        'price_key': document['price_key'],
+        'extras_key': document['extras_key'],
+      });
+    }
+  }
+
+  Text priceResult(DocumentSnapshot document) {
+    if (document['price_key'] != '') {
+      double result = document['price_key'] * document['piece_key'];
+      return new Text("\$" + result.toString());
+    } else {
+      return new Text('-');
+    }
+  }
+
+  Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
     return new Container(
       child: GestureDetector(
         onTap: () {
@@ -27,7 +54,7 @@ class ListItems extends StatelessWidget {
             MaterialPageRoute(
                 builder: (context) =>
                     AddItems(
-                      document: document.key, // Hata olabilir
+                      document: document,
                       documentID: title,
                     )),
           );
@@ -35,14 +62,13 @@ class ListItems extends StatelessWidget {
         child: new Card(
           child: Dismissible(
             direction: DismissDirection.endToStart,
-            key: new ValueKey(document.key),
-            // hata olabilir
+            key: new ValueKey(document.documentID),
             onDismissed: (direction) {
-              _deleteItem(document.key); // Hata olabilir
+              _deleteItem(document);
             },
             background: Card(
               margin: const EdgeInsets.all(0.0),
-              color: Colors.pinkAccent,
+              color: Colors.redAccent,
               child: Center(
                 child: ListTile(
                   trailing: Icon(
@@ -54,39 +80,39 @@ class ListItems extends StatelessWidget {
             ),
             // TODO: Re-design the entire ListTile, because trailing part is unstable for smaller screens.
             child: new ListTile(
-              key: new ValueKey(document.key),
-              // hata olabilir
-              leading: (document.value.key['piece_key'] < 5
-                  ? new Icon(
-                      MdiIcons.alertCircleOutline,
-                      color: alertColor,
-                    )
-                  : new Icon(
-                      MdiIcons.checkCircleOutline,
-                      color: Colors.greenAccent,
-                    )),
+              key: new ValueKey(document.documentID),
+              leading: (document['piece_key'] < 5
+                  ? new Text(
+                document['piece_key'].toString(),
+                style: TextStyle(
+                    color: alertColor,
+                    fontWeight: FontWeight.w300,
+                    fontSize: 24.0),
+              )
+                  : new Text(
+                document['piece_key'].toString(),
+                style: TextStyle(
+                    color: Colors.blueGrey,
+                    fontWeight: FontWeight.w300,
+                    fontSize: 24.0),
+              )),
               title: new Text(
-                document.value.key['serial_number_key'],
+                document['serial_number_key'],
                 style:
-                    TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
+                TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
               ),
               trailing: FlatButton(
+                key: new ValueKey(document.documentID),
                 padding: EdgeInsets.only(
                     left: 40.0, right: 0.0, bottom: 0.0, top: 0.0),
-                child: (document.value.key['piece_key'] < 5
-                    ? new Text(
-                  document.value.key['piece_key'].toString(),
-                        style: TextStyle(
-                            color: alertColor,
-                            fontWeight: FontWeight.w100,
-                            fontSize: 32.0),
-                      )
-                    : new Text(
-                  document.value.key['piece_key'].toString(),
-                        style: TextStyle(
-                            fontWeight: FontWeight.w100, fontSize: 32.0),
-                      )),
-                onPressed: null,
+                child: new Icon(
+                  MdiIcons.minusBoxOutline,
+                  color: Colors.blueAccent,
+                  size: 32.0,
+                ),
+                onPressed: () {
+                  _updateItem(document);
+                },
               ),
               subtitle: new Container(
                 alignment: Alignment.centerLeft,
@@ -106,7 +132,7 @@ class ListItems extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(top: 4.0),
                           child: new Text(
-                            'Type:',
+                            'Total Price:',
                             style: TextStyle(
                               color: nameColor,
                             ),
@@ -122,19 +148,12 @@ class ListItems extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           new Text(
-                            document.value.key['name_key'],
+                            document['name_key'],
                             style: TextStyle(fontWeight: FontWeight.w300),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 4.0),
-                            child: new Text(
-                              document.value.key['type_key'] == ''
-                                  ? '-'
-                                  : document.value.key['type_key'],
-                              style: TextStyle(
-                                fontWeight: FontWeight.w300,
-                              ),
-                            ),
+                            child: priceResult(document),
                           )
                         ],
                       ),
@@ -173,22 +192,24 @@ class ListItems extends StatelessWidget {
       ),
       body: new StreamBuilder(
           stream: Firestore.instance
-              .collection('serial_number')
+              .collection('gumush_db')
               .document(title)
+              .collection(title)
+              .orderBy('piece_key', descending: false)
               .snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData)
               return Center(
                   child: new Icon(
-                Icons.cloud_download,
-                color: primaryColor,
-                size: 64.0,
-              ));
-
+                    Icons.cloud_download,
+                    color: primaryColor,
+                    size: 64.0,
+                  ));
             return new ListView.builder(
-                itemCount: snapshot.data.data.length,
+                itemCount: snapshot.data.documents.length,
                 itemBuilder: (context, index) {
-                  return _buildListItem(context, snapshot.data.data[index]);
+                  return _buildListItem(
+                      context, snapshot.data.documents[index]);
                 });
           }),
     );

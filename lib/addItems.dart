@@ -8,12 +8,14 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 class AddItems extends StatefulWidget {
   final DocumentSnapshot document;
   final String documentID;
+  final List<String> categoryList;
 
-  const AddItems({Key key, this.document, this.documentID}) : super(key: key);
+  const AddItems({Key key, this.document, this.documentID, this.categoryList})
+      : super(key: key);
 
   @override
   AddItemsState createState() {
-    return new AddItemsState(document, documentID);
+    return new AddItemsState(document, documentID, categoryList);
   }
 }
 
@@ -26,14 +28,15 @@ class AddItemsState extends State<AddItems> {
   final TextEditingController itemSerialNumber = new TextEditingController();
   final TextEditingController itemName = new TextEditingController();
   final TextEditingController itemPiece = new TextEditingController();
-
-//  final TextEditingController itemType = new TextEditingController();
+  final TextEditingController itemPrice = new TextEditingController();
   final TextEditingController itemExtras = new TextEditingController();
 
   final DocumentSnapshot document;
-  final String documentID;
+  String documentID = '';
+  List<String> categoryList = [];
+  List<DropdownMenuItem<String>> _dropdownCategoryItems = [];
 
-  AddItemsState(this.document, this.documentID);
+  AddItemsState(this.document, this.documentID, this.categoryList);
 
   @override
   void dispose() {
@@ -43,25 +46,54 @@ class AddItemsState extends State<AddItems> {
     itemName.clear();
     itemPiece.clearComposing();
     itemPiece.clear();
-//    itemType.clearComposing();
-//    itemType.clear();
+    itemPrice.clearComposing();
+    itemPrice.clear();
     itemExtras.clearComposing();
     itemExtras.clear();
-    super.dispose();
+    try {
+      super.dispose();
+    } on Error {}
   }
 
   @override
   initState() {
+    if (categoryList != null) {
+      _dropdownCategoryItems = buildAndGetDropDownMenuItems(categoryList);
+      documentID = _dropdownCategoryItems[0].value;
+    } else {
+      List<String> emptyList = [];
+      emptyList.add(documentID);
+      _dropdownCategoryItems = buildAndGetDropDownMenuItems(emptyList);
+      documentID = _dropdownCategoryItems[0].value;
+    }
+
     try {
       itemSerialNumber.text = document['serial_number_key'];
       itemName.text = document['name_key'];
       itemPiece.text = document['piece_key'].toString();
-//      itemType.text = document['type_key'];
+      itemPrice.text = document['price_key'].toString();
       itemExtras.text = document['extras_key'];
     } on NoSuchMethodError {} catch (e) {
       setState(() => this.serialNumberBarcode = 'Unknown error: $e');
     }
     super.initState();
+  }
+
+  List<DropdownMenuItem<String>> buildAndGetDropDownMenuItems(List categories) {
+    List<DropdownMenuItem<String>> items = new List();
+    for (String category in categories) {
+      items.add(new DropdownMenuItem(
+        child: new Text(category),
+        value: category,
+      ));
+    }
+    return items;
+  }
+
+  void changedDropDownItem(String selectedCategory) {
+    setState(() {
+      documentID = selectedCategory;
+    });
   }
 
   _showSnackBar() {
@@ -77,16 +109,16 @@ class AddItemsState extends State<AddItems> {
   _addToFireStore() {
     final String serialConverted = itemSerialNumber.text;
     Firestore.instance
-        .collection('serial_number')
+        .collection('gumush_db')
         .document(documentID)
-        .updateData({
-      '$serialConverted': {
-        'serial_number_key': itemSerialNumber.text,
-        'name_key': itemName.text,
-        'piece_key': int.parse(itemPiece.text),
-//        'type_key': itemType.text,
-        'extras_key': itemExtras.text,
-      }
+        .collection(documentID)
+        .document(serialConverted)
+        .setData({
+      'serial_number_key': itemSerialNumber.text,
+      'name_key': itemName.text,
+      'piece_key': int.parse(itemPiece.text),
+      'price_key': itemPrice.text.isEmpty ? 0.0 : double.parse(itemPrice.text),
+      'extras_key': itemExtras.text,
     });
     _showSnackBar();
     dispose();
@@ -105,10 +137,7 @@ class AddItemsState extends State<AddItems> {
       } else {
         setState(() => this.serialNumberBarcode = 'Unknown error: $e');
       }
-    } on FormatException {
-      setState(() => this.serialNumberBarcode =
-          'null (User returned using the "back"-button before scanning anything. Result)');
-    } catch (e) {
+    } on FormatException {} catch (e) {
       setState(() => this.serialNumberBarcode = 'Unknown error: $e');
     }
     return null;
@@ -117,14 +146,16 @@ class AddItemsState extends State<AddItems> {
   Future<FutureBuilder> checkSerialNumber(String serialNumber) async {
     try {
       DocumentSnapshot result = await Firestore.instance
-          .collection('serial_number')
+          .collection('gumush_db')
+          .document(documentID)
+          .collection(documentID)
           .document(serialNumber)
           .get();
 
       itemSerialNumber.text = result['serial_number_key'];
       itemName.text = result['name_key'];
       itemPiece.text = result['piece_key'].toString();
-//      itemType.text = result['type_key'];
+      itemPrice.text = result['price_key'].toString();
       itemExtras.text = result['extras_key'];
     } on NoSuchMethodError {
       itemSerialNumber.text = serialNumber;
@@ -163,8 +194,25 @@ class AddItemsState extends State<AddItems> {
       body: new Container(
         child: new ListView(
           shrinkWrap: true,
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(10.0),
           children: <Widget>[
+            new Visibility(
+              visible: true,
+              child: new Padding(
+                padding: const EdgeInsets.only(bottom: 10.0),
+                child: new InputDecorator(
+                  decoration: const InputDecoration(
+                    icon: const Icon(MdiIcons.satelliteVariant),
+                  ),
+                  child: new DropdownButtonHideUnderline(
+                    child: new DropdownButton(
+                        value: documentID,
+                        items: _dropdownCategoryItems,
+                        onChanged: changedDropDownItem),
+                  ),
+                ),
+              ),
+            ),
             new Padding(
               child: new Row(
                 children: <Widget>[
@@ -174,7 +222,7 @@ class AddItemsState extends State<AddItems> {
                       enabled: true,
                       decoration: InputDecoration(
                         labelText: 'Serial Number',
-                        border: UnderlineInputBorder(),
+                        border: OutlineInputBorder(),
                         helperText: 'Required',
                         suffixIcon: new GestureDetector(
                           onTap: () {
@@ -201,7 +249,7 @@ class AddItemsState extends State<AddItems> {
                 enabled: true,
                 decoration: InputDecoration(
                   labelText: 'Name',
-                  border: UnderlineInputBorder(),
+                  border: OutlineInputBorder(),
                   helperText: 'Required',
                 ),
               ),
@@ -214,22 +262,27 @@ class AddItemsState extends State<AddItems> {
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   labelText: 'Piece',
-                  border: UnderlineInputBorder(),
+                  border: OutlineInputBorder(),
                   helperText: 'Required',
                 ),
               ),
             ),
-//            new Padding(
-//              padding: const EdgeInsets.only(bottom: 10.0),
-//              child: new TextField(
-//                controller: itemType,
-//                enabled: true,
-//                decoration: InputDecoration(
-//                    labelText: 'Category',
-//                    border: UnderlineInputBorder(),
-//                    helperText: 'Optional'),
-//              ),
-//            ),
+            new Padding(
+              padding: const EdgeInsets.only(bottom: 10.0),
+              child: new TextField(
+                controller: itemPrice,
+                enabled: true,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                    labelText: 'Price per unit',
+                    border: OutlineInputBorder(),
+                    helperText: 'Optional',
+                    prefixIcon: new Icon(
+                      Icons.attach_money,
+                      color: Colors.green,
+                    )),
+              ),
+            ),
             new Padding(
               padding: const EdgeInsets.only(bottom: 10.0),
               child: new TextField(
@@ -237,7 +290,7 @@ class AddItemsState extends State<AddItems> {
                 enabled: true,
                 decoration: InputDecoration(
                     labelText: 'Extras',
-                    border: UnderlineInputBorder(),
+                    border: OutlineInputBorder(),
                     helperText: 'Optional'),
               ),
             ),
