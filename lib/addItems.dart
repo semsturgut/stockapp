@@ -9,13 +9,21 @@ class AddItems extends StatefulWidget {
   final DocumentSnapshot document;
   final String documentID;
   final List<String> categoryList;
+  final String fromWhere;
+  final String title;
 
-  const AddItems({Key key, this.document, this.documentID, this.categoryList})
+  const AddItems({Key key,
+    this.document,
+    this.documentID,
+    this.categoryList,
+    this.fromWhere,
+    this.title})
       : super(key: key);
 
   @override
   AddItemsState createState() {
-    return new AddItemsState(document, documentID, categoryList);
+    return new AddItemsState(
+        document, documentID, categoryList, fromWhere, title);
   }
 }
 
@@ -35,8 +43,11 @@ class AddItemsState extends State<AddItems> {
   String documentID = '';
   List<String> categoryList = [];
   List<DropdownMenuItem<String>> _dropdownCategoryItems = [];
+  String fromWhere = '';
+  String title = '';
 
-  AddItemsState(this.document, this.documentID, this.categoryList);
+  AddItemsState(this.document, this.documentID, this.categoryList,
+      this.fromWhere, this.title);
 
   @override
   void dispose() {
@@ -59,11 +70,9 @@ class AddItemsState extends State<AddItems> {
   initState() {
     if (categoryList != null) {
       _dropdownCategoryItems = buildAndGetDropDownMenuItems(categoryList);
-      documentID = _dropdownCategoryItems[0].value;
-    } else {
-      List<String> emptyList = [];
-      emptyList.add(documentID);
-      _dropdownCategoryItems = buildAndGetDropDownMenuItems(emptyList);
+    }
+
+    if (fromWhere == 'category') {
       documentID = _dropdownCategoryItems[0].value;
     }
 
@@ -108,6 +117,7 @@ class AddItemsState extends State<AddItems> {
 
   _addToFireStore() {
     final String serialConverted = itemSerialNumber.text;
+
     Firestore.instance
         .collection('gumush_db')
         .document(documentID)
@@ -197,7 +207,7 @@ class AddItemsState extends State<AddItems> {
           padding: const EdgeInsets.all(10.0),
           children: <Widget>[
             new Visibility(
-              visible: true,
+              visible: fromWhere == 'category' ? true : false,
               child: new Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: new InputDecorator(
@@ -261,6 +271,16 @@ class AddItemsState extends State<AddItems> {
                 enabled: true,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
+                  suffixIcon: new GestureDetector(
+                      onTap: () {
+                        itemPiece.text =
+                            (int.parse(itemPiece.text) - 1).toString();
+                      },
+                      child: new Icon(
+                        MdiIcons.minus,
+                        size: 42.0,
+                        color: Colors.redAccent,
+                      )),
                   labelText: 'Piece',
                   border: OutlineInputBorder(),
                   helperText: 'Required',
@@ -277,9 +297,10 @@ class AddItemsState extends State<AddItems> {
                     labelText: 'Price per unit',
                     border: OutlineInputBorder(),
                     helperText: 'Optional',
-                    prefixIcon: new Icon(
+                    suffixIcon: new Icon(
                       Icons.attach_money,
                       color: Colors.green,
+                      size: 32.0,
                     )),
               ),
             ),

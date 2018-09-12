@@ -8,8 +8,9 @@ const alertColor = Color(0xFFFF5E00);
 const nameColor = Color(0xFF605A76);
 
 class ListItems extends StatelessWidget {
-  const ListItems({Key key, this.title}) : super(key: key);
+  const ListItems({Key key, this.title, this.categoryList}) : super(key: key);
   final String title;
+  final List<String> categoryList;
 
   _deleteItem(DocumentSnapshot document) {
     Firestore.instance.runTransaction((transaction) async {
@@ -56,6 +57,7 @@ class ListItems extends StatelessWidget {
                     AddItems(
                       document: document,
                       documentID: title,
+                      categoryList: categoryList,
                     )),
           );
         },
@@ -184,7 +186,10 @@ class ListItems extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => AddItems(documentID: title)),
+                    builder: (context) =>
+                        AddItems(documentID: title,
+                          categoryList: categoryList,
+                          title: title,)),
               );
             },
           )

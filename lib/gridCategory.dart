@@ -44,7 +44,11 @@ class GridCategoryState extends State<GridCategory> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => ListItems(title: document.documentID)),
+                  builder: (context) =>
+                      ListItems(
+                        title: document.documentID,
+                        categoryList: categoryList,
+                      )),
             );
           },
           onLongPress: () {
@@ -202,12 +206,15 @@ class GridCategoryState extends State<GridCategory> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => AddItems(categoryList: categoryList)),
+                    builder: (context) =>
+                        AddItems(
+                          categoryList: categoryList,
+                          fromWhere: 'category',
+                        )),
               );
             }
           },
-          elevation: 0.0,
-          child: new Icon(MdiIcons.barcodeScan),
+          child: new Icon(MdiIcons.barcodeScan, size: 32.0),
           backgroundColor: primaryColor),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
