@@ -134,7 +134,7 @@ class ListItems extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(top: 4.0),
                           child: new Text(
-                            'Total Price:',
+                            'T.Price:',
                             style: TextStyle(
                               color: nameColor,
                             ),
